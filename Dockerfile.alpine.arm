@@ -1,0 +1,33 @@
+# STEP 1 BUILD
+FROM --platform=${BUILDPLATFORM} golang:alpine3.22 AS builder
+ARG TARGETARCH
+ARG TARGETVARIANT
+WORKDIR /usr/src/wireproxy
+
+RUN apk add --no-cache \
+    build-base \
+    git \
+    make \
+    cmake
+
+RUN git clone https://github.com/windtf/wireproxy
+
+RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOARM=${TARGETVARIANT} make
+
+# Smoke test
+RUN cd wireproxy && ./bin/wireproxy -h
+
+# STEP 2 RUNTIME
+FROM --platform=${BUILDPLATFORM} debian:trixie-slim 
+WORKDIR /app
+COPY --from=builder /usr/src/wireproxy/wireproxy /usr/bin/wireproxy
+EXPOSE 25565
+EXPOSE 25545
+EXPOSE 25344
+EXPOSE 25345
+# Create a non-root user
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+USER appuser
+VOLUME [ "/etc/wireproxy"]
+ENTRYPOINT [ "/usr/bin/wireproxy" ]
+CMD [ "--config", "/etc/wireproxy/config" ]
