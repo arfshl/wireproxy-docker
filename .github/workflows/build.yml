@@ -34,6 +34,9 @@ jobs:
             with:
                username: arfshl
                password: ${{ secrets.DOCKERPASS }}
+
+          - name: Downcase Repo Name
+            run: echo "REPONAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
           - name: Build and push Docker images
             uses: docker/build-push-action@v3
@@ -49,7 +52,7 @@ jobs:
                 arfshl/wireproxy:debian
 
     build-debian-arm:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04-arm
         steps:
           - name: Checkout code
             uses: actions/checkout@v3
@@ -72,6 +75,9 @@ jobs:
             with:
                username: arfshl
                password: ${{ secrets.DOCKERPASS }}
+
+          - name: Downcase Repo Name
+            run: echo "REPONAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
           - name: Build and push Docker images
             uses: docker/build-push-action@v3
@@ -79,7 +85,7 @@ jobs:
               context: .
               push: true
               file: Dockerfile.debian.arm
-              platforms: linux/arm64 linux/arm/v7
+              platforms: linux/arm64,linux/arm/v7
               tags: |
                 ghcr.io/${{ env.REPONAME }}:latest
                 ghcr.io/${{ env.REPONAME }}:debian
@@ -110,6 +116,9 @@ jobs:
             with:
                username: arfshl
                password: ${{ secrets.DOCKERPASS }}
+
+          - name: Downcase Repo Name
+            run: echo "REPONAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
           - name: Build and push Docker images
             uses: docker/build-push-action@v3
@@ -123,8 +132,9 @@ jobs:
                 arfshl/wireproxy:alpine
 
     build-alpine-arm:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04-arm
         steps:
+            
           - name: Checkout code
             uses: actions/checkout@v3
     
@@ -146,6 +156,9 @@ jobs:
             with:
                username: arfshl
                password: ${{ secrets.DOCKERPASS }}
+
+          - name: Downcase Repo Name
+            run: echo "REPONAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
           - name: Build and push Docker images
             uses: docker/build-push-action@v3
@@ -153,7 +166,7 @@ jobs:
               context: .
               push: true
               file: Dockerfile.debian.arm
-              platforms: linux/arm64 linux/arm/v7
+              platforms: linux/arm64,linux/arm/v7
               tags: |
                 ghcr.io/${{ env.REPONAME }}:alpine
                 arfshl/wireproxy:alpine
