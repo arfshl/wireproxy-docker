@@ -14,13 +14,13 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/windtf/wireproxy
 
-RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} make
+RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOFLAGS="-ldflags=-s -ldflags=-w" make
 
 # Smoke test
 RUN cd wireproxy && ./wireproxy -h
 
 # STEP 2 RUNTIME
-FROM --platform=${BUILDPLATFORM} debian:latest
+FROM debian:latest
 WORKDIR /app
 COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565
