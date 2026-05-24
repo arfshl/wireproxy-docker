@@ -30,6 +30,7 @@ EXPOSE 25345
 # Create a non-root user
 RUN groupadd -r appgroup && \
     useradd -r -g appgroup -m -s /sbin/nologin appuser
+USER appuser
 VOLUME [ "/app/wireproxy"]
 ENTRYPOINT [ "/app/wireproxy/wireproxy" ]
 CMD [ "--config", "/app/wireproxy/config" ]
