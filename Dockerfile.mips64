@@ -1,0 +1,36 @@
+# STEP 1 BUILD
+FROM --platform=${BUILDPLATFORM} golang:bookworm AS builder
+ARG TARGETARCH
+ARG TARGETVARIANT
+WORKDIR /app
+
+RUN apt-get install --update -y --no-install-recommends \
+    build-essential \
+    git \
+    make \
+    cmake 
+    
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/windtf/wireproxy
+
+RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOFLAGS="-ldflags=-s -ldflags=-w" make
+
+# Smoke test
+RUN cd wireproxy && ./wireproxy -h
+
+# STEP 2 RUNTIME
+FROM debian:bookworm
+WORKDIR /app
+COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
+EXPOSE 25565
+EXPOSE 25545
+EXPOSE 25344
+EXPOSE 25345
+# Create a non-root user
+RUN groupadd -r appgroup && \
+    useradd -r -g appgroup -m -s /sbin/nologin appuser
+USER appuser
+VOLUME [ "/app/wireproxy"]
+ENTRYPOINT [ "/app/wireproxy/wireproxy" ]
+CMD [ "--config", "/app/wireproxy/config" ]
