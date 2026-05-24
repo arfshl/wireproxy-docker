@@ -1,5 +1,5 @@
 # STEP 1 BUILD
-FROM --platform=${BUILDPLATFORM} golang:latest AS builder
+FROM --platform=${BUILDPLATFORM} golang:trixie AS builder
 ARG TARGETARCH
 ARG TARGETVARIANT
 WORKDIR /app
@@ -27,7 +27,7 @@ RUN export GOOS=linux && \
 RUN cd wireproxy && ./wireproxy -h
 
 # STEP 2 RUNTIME
-FROM debian:latest
+FROM debian:trixie
 WORKDIR /app
 COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565

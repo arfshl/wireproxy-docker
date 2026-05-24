@@ -1,10 +1,10 @@
 # STEP 1 BUILD
-FROM --platform=${BUILDPLATFORM} golang:latest AS builder
+FROM --platform=${BUILDPLATFORM} golang:bookworm AS builder
 ARG TARGETARCH
 ARG TARGETVARIANT
 WORKDIR /app
 
-RUN apt-get install --update -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     git \
     make \
@@ -14,13 +14,20 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/windtf/wireproxy
 
-RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOARM=${TARGETVARIANT##*v} GOFLAGS="-ldflags=-s -ldflags=-w" make
+RUN export GOOS=linux && \
+    export GOARCH=${TARGETARCH} && \
+    if [ "${TARGETARCH}" = "arm" ]; then \
+        export GOARM=${TARGETVARIANT##*v}; \
+    else \
+        unset GOARM; \
+    fi && \
+    cd wireproxy && GOFLAGS="-ldflags=-s -ldflags=-w" make
 
 # Smoke test
 RUN cd wireproxy && ./wireproxy -h
 
 # STEP 2 RUNTIME
-FROM debian:latest
+FROM debian:bookworm
 WORKDIR /app
 COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565

@@ -12,7 +12,14 @@ RUN apk add --no-cache \
 
 RUN git clone https://github.com/windtf/wireproxy
 
-RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOFLAGS="-ldflags=-s -ldflags=-w" make
+RUN export GOOS=linux && \
+    export GOARCH=${TARGETARCH} && \
+    if [ "${TARGETARCH}" = "arm" ]; then \
+        export GOARM=${TARGETVARIANT##*v}; \
+    else \
+        unset GOARM; \
+    fi && \
+    cd wireproxy && GOFLAGS="-ldflags=-s -ldflags=-w" make
 
 # Smoke test
 RUN cd wireproxy && ./wireproxy -h
