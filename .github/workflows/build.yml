@@ -8,6 +8,10 @@ on:
     paths: [ 'Dockerfile*', '.github/workflows/build.yml' ]
   workflow_dispatch:
 
+  permissions:
+      contents: read
+      packages: write
+
 jobs:
     
     build-debian:
