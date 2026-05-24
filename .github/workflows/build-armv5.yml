@@ -1,4 +1,4 @@
-name: Build
+name: Build armv5
 
 on:
   schedule:
