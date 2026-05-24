@@ -18,7 +18,7 @@ RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOARM=${TARGETVARIANT} make
 RUN cd wireproxy && ./wireproxy -h
 
 # STEP 2 RUNTIME
-FROM --platform=${BUILDPLATFORM} alpine:latest
+FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565
