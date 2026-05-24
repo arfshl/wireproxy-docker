@@ -211,7 +211,7 @@ jobs:
               context: .
               push: true
               file: Dockerfile.alpine.arm
-              platforms: linux/arm64,linux/arm/v7,linux/arm/v5
+              platforms: linux/arm64,linux/arm/v7,linux/arm/v6
               tags: |
                 ghcr.io/${{ env.REPONAME }}:alpine
                 arfshl/wireproxy:alpine

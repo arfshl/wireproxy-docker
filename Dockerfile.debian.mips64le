@@ -4,7 +4,8 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 WORKDIR /app
 
-RUN apt-get install --update -y --no-install-recommends \
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
     build-essential \
     git \
     make \
