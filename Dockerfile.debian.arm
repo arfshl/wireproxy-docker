@@ -14,7 +14,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/windtf/wireproxy
 
-RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOARM=${TARGETVARIANT} GOFLAGS="-ldflags=-s -ldflags=-w" make
+RUN cd wireproxy && GOOS=linux GOARCH=${TARGETARCH} GOARM=${TARGETVARIANT##*v GOFLAGS="-ldflags=-s -ldflags=-w" make
 
 # Smoke test
 RUN cd wireproxy && ./wireproxy -h
