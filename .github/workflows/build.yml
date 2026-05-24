@@ -129,7 +129,7 @@ jobs:
             with:
               context: .
               push: true
-              file: Dockerfile.debian
+              file: Dockerfile.alpine
               platforms: linux/amd64,linux/386,linux/ppc64le,linux/s390x,linux/riscv64
               tags: |
                 ghcr.io/${{ env.REPONAME }}:alpine
@@ -169,7 +169,7 @@ jobs:
             with:
               context: .
               push: true
-              file: Dockerfile.debian.arm
+              file: Dockerfile.alpine.arm
               platforms: linux/arm64,linux/arm/v7
               tags: |
                 ghcr.io/${{ env.REPONAME }}:alpine
