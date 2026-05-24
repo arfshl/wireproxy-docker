@@ -20,7 +20,7 @@ RUN cd wireproxy && ./wireproxy -h
 # STEP 2 RUNTIME
 FROM --platform=${BUILDPLATFORM} alpine:latest
 WORKDIR /app
-COPY --from=builder /usr/src/wireproxy/wireproxy /usr/bin/wireproxy
+COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565
 EXPOSE 25545
 EXPOSE 25344
