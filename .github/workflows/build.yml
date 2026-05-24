@@ -8,9 +8,9 @@ on:
     paths: [ 'Dockerfile*', '.github/workflows/build.yml' ]
   workflow_dispatch:
 
-  permissions:
-      contents: read
-      packages: write
+permissions:
+   contents: read
+   packages: write
 
 jobs:
     
