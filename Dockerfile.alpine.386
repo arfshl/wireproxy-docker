@@ -1,16 +1,14 @@
 # STEP 1 BUILD
-FROM --platform=${BUILDPLATFORM} golang:bookworm AS builder
+FROM --platform=${BUILDPLATFORM} golang:alpine AS builder
 ARG TARGETARCH
 ARG TARGETVARIANT
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+RUN apk add --no-cache \
+    build-base \
     git \
     make \
-    cmake 
-    
-RUN rm -rf /var/lib/apt/lists/*
+    cmake
 
 RUN git clone https://github.com/windtf/wireproxy
 
@@ -27,7 +25,7 @@ RUN export GOOS=linux && \
 RUN cd wireproxy && ./wireproxy -h
 
 # STEP 2 RUNTIME
-FROM debian:bookworm
+FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
 EXPOSE 25565
@@ -35,8 +33,8 @@ EXPOSE 25545
 EXPOSE 25344
 EXPOSE 25345
 # Create a non-root user
-RUN groupadd -r appgroup && \
-    useradd -r -g appgroup -m -s /sbin/nologin appuser
+RUN addgroup -S appgroup && \
+    adduser -S -G appgroup appuser
 USER appuser
 VOLUME [ "/app/wireproxy"]
 ENTRYPOINT [ "/app/wireproxy/wireproxy" ]

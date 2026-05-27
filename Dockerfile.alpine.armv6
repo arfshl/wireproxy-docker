@@ -1,0 +1,41 @@
+# STEP 1 BUILD
+FROM --platform=${BUILDPLATFORM} golang:alpine AS builder
+ARG TARGETARCH
+ARG TARGETVARIANT
+WORKDIR /app
+
+RUN apk add --no-cache \
+    build-base \
+    git \
+    make \
+    cmake
+
+RUN git clone https://github.com/windtf/wireproxy
+
+RUN export GOOS=linux && \
+    export GOARCH=${TARGETARCH} && \
+    if [ "${TARGETARCH}" = "arm" ]; then \
+        export GOARM=${TARGETVARIANT##*v}; \
+    else \
+        unset GOARM; \
+    fi && \
+    cd wireproxy && GOFLAGS="-ldflags=-s -ldflags=-w" make
+
+# Smoke test
+RUN cd wireproxy && ./wireproxy -h
+
+# STEP 2 RUNTIME
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/wireproxy/wireproxy /app/wireproxy/wireproxy
+EXPOSE 25565
+EXPOSE 25545
+EXPOSE 25344
+EXPOSE 25345
+# Create a non-root user
+RUN addgroup -S appgroup && \
+    adduser -S -G appgroup appuser
+USER appuser
+VOLUME [ "/app/wireproxy"]
+ENTRYPOINT [ "/app/wireproxy/wireproxy" ]
+CMD [ "--config", "/app/wireproxy/config" ]

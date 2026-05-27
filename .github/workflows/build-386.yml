@@ -47,8 +47,8 @@ jobs:
             with:
               context: .
               push: true
-              file: Dockerfile.debian.386
+              file: Dockerfile.alpine.386
               platforms: linux/386
               tags: |
-                ghcr.io/${{ env.REPONAME }}:debian-386
-                arfshl/wireproxy:debian-386
+                ghcr.io/arfshl/wireproxy:alpine-386
+                arfshl/wireproxy:alpine-386

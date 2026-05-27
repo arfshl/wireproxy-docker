@@ -50,5 +50,5 @@ jobs:
               file: Dockerfile.debian.mips64le
               platforms: linux/mips64le
               tags: |
-                ghcr.io/${{ env.REPONAME }}:debian-mips64le
+                ghcr.io/arfshl/wireproxy:debian-mips64le
                 arfshl/wireproxy:debian-mips64le

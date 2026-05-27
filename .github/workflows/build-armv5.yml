@@ -50,5 +50,5 @@ jobs:
               file: Dockerfile.debian.armv5
               platforms: linux/arm/v5
               tags: |
-                ghcr.io/${{ env.REPONAME }}:debian-armv5
+                ghcr.io/arfshl/wireproxy:debian-armv5
                 arfshl/wireproxy:debian-armv5
